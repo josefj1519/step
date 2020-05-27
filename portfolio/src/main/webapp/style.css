@@ -3,16 +3,16 @@
 }
 
 #hamburger {
+    position: fixed;
     cursor: pointer;
     display: inline-block;
-    position: relative;
-    left: 60px;
-    top: 50px;
+    margin-top: 50px;
+    margin-left: 60px;
 }
  
 .bar {
     width: 30px;
-    height: 4px;
+    height: 5px;
     background-color: black;
     margin: 5px;
 }
@@ -28,4 +28,19 @@
 
 #quote-container {
   margin-top: 20px;
+}
+
+#dropdown-container{
+    position:fixed;
+    width:100px;
+	height:150px;
+    margin-top: 85px;
+    margin-left: 85px;
+    background-color:grey;
+    opacity: .4;
+    display: none;
+}
+
+#dropdown-container .dropdown-item{
+    text-align: center;
 }
