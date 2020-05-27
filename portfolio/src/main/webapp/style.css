@@ -2,8 +2,25 @@
   background-color: azure;
 }
 
+#hamburger {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    left: 60px;
+    top: 50px;
+}
+ 
+.bar {
+    width: 30px;
+    height: 4px;
+    background-color: black;
+    margin: 5px;
+}
+
+
 #content {
   font-family:'Courier New', Courier, monospace;
+  text-align: center;
   margin-left: auto;
   margin-right: auto;
   width: 650px;
