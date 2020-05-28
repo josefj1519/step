@@ -38,7 +38,7 @@
   margin-top: 85px;
   margin-left: 85px;
   border: 2px solid black;
-  display: block;
+  display: none;
 }
 
 #dropdown-container .dropdown-item{
