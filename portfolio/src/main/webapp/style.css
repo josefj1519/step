@@ -31,16 +31,29 @@
 }
 
 #dropdown-container{
-    position:fixed;
-    width:100px;
-	height:150px;
-    margin-top: 85px;
-    margin-left: 85px;
-    background-color:grey;
-    opacity: .4;
-    display: none;
+  cursor: pointer;
+  position:fixed;
+  width:100px;
+  height:105px;
+  margin-top: 85px;
+  margin-left: 85px;
+  border: 2px solid black;
+  display: block;
 }
 
 #dropdown-container .dropdown-item{
-    text-align: center;
+  cursor: pointer;
+  text-align: center;
+  background-color: rgb(204, 196, 196);
+  border: 2px solid black;
+  margin-top: 0px;
+  font-size: 20px;
+}
+.dropdown-item .dropdown-link{
+  text-decoration: none;
+  color: black;
+}
+
+#links, #about-me, #gallery, #quote{
+    margin-bottom: 150px;
 }
