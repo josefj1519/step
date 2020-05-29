@@ -7,30 +7,58 @@
     <script src="script.js"></script>
   </head>
   <body id="body">
+    <div id="hamburger" onclick="displayHamburgerDropdown()">
+      <div class=bar></div>
+      <div class=bar></div>
+      <div class=bar></div>
+    </div>
+    <div id="dropdown-container">
+      <div class="dropdown-item"> 
+           <a class=dropdown-link href="#links">Links</a>
+      </div> 
+      <div class="dropdown-item"> 
+           <a class=dropdown-link href="#about-me">About me</a>
+      </div> 
+      <div class="dropdown-item"> 
+         <a class=dropdown-link href="#gallery">Gallery</a>
+      </div> 
+      <div class="dropdown-item"> 
+          <a class=dropdown-link href="#quote">Quote</a>
+      </div> 
+    </div>
     <div id="content"> 
       <h1>Josef's Portfolio</h1>
-      <h2>Links:</h2>
-      <p>Github: 
-      <a href="https://github.com/josefj1519">https://github.com/josefj1519</a>
-      </p>
-      <p>Linkedin: 
-      <a href="www.linkedin.com/in/josef-jankowski-368a88158">www.linkedin.com/in/josef-jankowski-368a88158</a>
-      </p>
-      <p>Resume: 
-      <a href="docs/Resume.pdf">Resume.pdf</a>
-      </p>
-      <h2>About Me:</h2>
-      <p>This is my portfolio.  I'm a second year at California State University, Fullerton.  
-          I enjoy movies, gaming, and hiking.  Some of my favorite movies include: 'Hot Fuzz',
-          'The Good, the Bad and the Ugly', 'Truman Show' and 'Lord of the Rings' trilogy.
-          I love playing pc games such as Counter-Strike and Civilization. 
-          When I'm not playing games or watching movies, I'm usually outside hiking!  
-      </p>
-       <a href="images/san_jacinto.jpg"><img src="images/san_jacinto.jpg" alt="Mt. San Jacinto Peak"/></a>
-       <p>The above image is a hike I did at Mt. San Jacinto State Park near Palm Springs, CA.</p>
-      <p>Click here to get a random quote from one of my favorite TV shows/Movies:</p>
-      <button onclick="addRandomQuote()">Quote</button>
-      <div id="quote-container"></div>
+      <div id=links>
+        <h2>Links:</h2>
+        <p>Github: 
+        <a href="https://github.com/josefj1519">https://github.com/josefj1519</a>
+        </p>
+        <p>Linkedin: 
+        <a href="www.linkedin.com/in/josef-jankowski-368a88158">www.linkedin.com/in/josef-jankowski-368a88158</a>
+        </p>
+        <p>Resume: 
+        <a href="docs/Resume.pdf">Resume.pdf</a>
+        </p>
+      </div>
+      <div id="about-me">
+        <h2>About Me:</h2>
+        <p>This is my portfolio.  I'm a second year at California State University, Fullerton.  
+           I enjoy movies, gaming, and hiking.  Some of my favorite movies include: 'Hot Fuzz',
+           'The Good, the Bad and the Ugly', 'Truman Show' and 'Lord of the Rings' trilogy.
+           I love playing pc games such as Counter-Strike and Civilization. 
+           When I'm not playing games or watching movies, I'm usually outside hiking!  
+        </p>
+      </div>
+      <div id="gallery">
+        <h2>Gallery:</h2>
+        <a href="images/san_jacinto.jpg"><img src="images/san_jacinto.jpg" alt="Mt. San Jacinto Peak" style="width:300px;height:450px"/></a>
+      </div>
+      <div id="quote">
+         <h2>Quote:</h2>
+        <p>Click here to get a random quote from one of my favorite TV shows/Movies:</p>
+        <button onclick="addRandomQuote()">Quote</button>
+        <div id="quote-container"></div>
+      </div>
     </div>
   </body>
 </html>
