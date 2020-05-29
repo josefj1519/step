@@ -35,3 +35,10 @@ function addRandomQuote() {
   const quoteContainer = document.getElementById('quote-container');
   quoteContainer.innerText = quote;
 }
+
+async function addHelloWorld(){
+  const response = await fetch('/data');
+  const txt = await response.text();
+  const helloContainer = document.getElementById('hello-container');
+  helloContainer.innerText = txt;
+}
