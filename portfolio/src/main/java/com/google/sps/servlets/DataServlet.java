@@ -21,20 +21,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content.*/
+/* Servlet that returns some example content.*/
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-    private ArrayList<String> shows = new ArrayList<String>(){
-      {
-        add("Avatar: The Last Airbender");
-        add("Arrested Development");
-        add("Breaking Bad");
-      }
-    };
-
+   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
+    ArrayList<String> shows = new ArrayList<String>();
+    shows.add("Avatar: The Last Airbender");
+    shows.add("Arrested Development");
+    shows.add("Breaking Bad");
     response.setContentType("application/json;");
     response.getWriter().println(convertToJsonUsingGson(shows));
   }
