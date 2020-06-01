@@ -13,7 +13,7 @@
 // limitations under the License.
 
 package com.google.sps.servlets;
-import java.util.ArrayList;
+import java.util.concurrent.ConcurrentSkipListSet; 
 import com.google.gson.Gson;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 /* Servlet that returns some example content.*/
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-  private ArrayList<String> shows = new ArrayList<String>();
+  private ConcurrentSkipListSet<String> shows = new ConcurrentSkipListSet<String>();
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json;");
