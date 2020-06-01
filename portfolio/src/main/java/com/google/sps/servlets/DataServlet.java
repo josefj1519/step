@@ -24,18 +24,24 @@ import javax.servlet.http.HttpServletResponse;
 /* Servlet that returns some example content.*/
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-   
+  private ArrayList<String> shows = new ArrayList<String>();
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    ArrayList<String> shows = new ArrayList<String>();
-    shows.add("Avatar: The Last Airbender");
-    shows.add("Arrested Development");
-    shows.add("Breaking Bad");
     response.setContentType("application/json;");
-    response.getWriter().println(convertToJsonUsingGson(shows));
+    response.getWriter().println(convertShowsToJsonUsingGson());
+  }
+
+ @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+      String textShows = request.getParameter("text-input");
+      String[] arrShows = textShows.split("\\s*,\\s*");
+      for(String tvShow : arrShows){
+          shows.add(tvShow);
+      }
+     response.sendRedirect("/index.html");
   }
   
-  private String convertToJsonUsingGson(ArrayList<String> shows) {
+  private String convertShowsToJsonUsingGson() {
     Gson gson = new Gson();
     String json = gson.toJson(shows);
     return json;

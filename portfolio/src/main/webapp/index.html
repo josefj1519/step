@@ -60,7 +60,14 @@
         <p>Click here to get a random quote from one of my favorite TV shows/Movies:</p>
         <button onclick="addRandomQuote()">Quote</button>
         <div id="quote-container"></div>
-        <button onclick="getShowTitles()">Shows Mentioned</button>
+        <form action="/data" method="POST">
+          <p>Enter your favorite shows seperated by commas! </p>
+          <textarea name="text-input">Avatar, Breaking Bad, Arrested Development</textarea>
+          </br>
+          <input type="submit"/>
+        </form>
+        </br>
+        <button onclick="getShowTitles()">Shows</button>
         <div id="shows-container"></div>
       </div>
     </div>
