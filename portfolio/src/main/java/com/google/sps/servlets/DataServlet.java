@@ -13,8 +13,7 @@
 // limitations under the License.
 
 package com.google.sps.servlets;
-import java.util.List;
-import java.util.Arrays;
+import java.util.concurrent.ConcurrentSkipListSet; 
 import com.google.gson.Gson;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -25,15 +24,25 @@ import javax.servlet.http.HttpServletResponse;
 /* Servlet that returns some example content.*/
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-   
+  private ConcurrentSkipListSet<String> shows = new ConcurrentSkipListSet<String>();
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    List<String> shows = Arrays.asList("Avatar", "BB", "AD");
     response.setContentType("application/json;");
-    response.getWriter().println(convertToJsonUsingGson(shows));
+    response.getWriter().println(convertShowsToJsonUsingGson());
+  }
+
+ @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+      String textShows = request.getParameter("text-input");
+      String[] arrShows = textShows.split("\\s*,\\s*");
+      for(String tvShow : arrShows){
+          shows.add(tvShow);
+      }
+     response.sendRedirect("/index.html");
   }
   
-  private String convertToJsonUsingGson(List<String> shows) {
+
+  private String convertToJsonUsingGson() {
     return (new Gson()).toJson(shows);
   }
 }
