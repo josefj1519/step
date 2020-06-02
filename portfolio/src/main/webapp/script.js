@@ -26,7 +26,7 @@ function displayHamburgerDropdown(){
  */
 function addRandomQuote() {
   const quotes =
-      ['Her?', 'Everything changed when the fire nation attacked', 'I\'m the one who knocks!', 'For Frodo'];
+      ['Her?', 'Everything changed when the fire nation attacked', 'I\'m the one who knocks!'];
 
   // Pick a random quote.
   const quote = quotes[Math.floor(Math.random() * quotes.length)];
@@ -36,9 +36,9 @@ function addRandomQuote() {
   quoteContainer.innerText = quote;
 }
 
-async function addHelloWorld(){
+async function getShowTitles(){
   const response = await fetch('/data');
-  const txt = await response.text();
-  const helloContainer = document.getElementById('hello-container');
-  helloContainer.innerText = txt;
+  const shows = await response.json();
+  const showsContainer = document.getElementById('shows-container');
+  showsContainer.innerText = shows;
 }
