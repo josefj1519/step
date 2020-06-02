@@ -36,24 +36,18 @@ public class DataServlet extends HttpServlet {
 
  @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      long timestamp = System.currentTimeMillis();
-      String textShows = request.getParameter("text-input");
-      String[] arrShows = textShows.split("\\s*,\\s*");
-      for(String tvShow : arrShows){
-          shows.add(tvShow);
-          Entity taskEntity = new Entity("Shows");
-          taskEntity.setProperty("show", tvShow);
-          taskEntity.setProperty("timestamp", timestamp);
-          DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-          datastore.put(taskEntity);
-      }
-    
-   
+      String textShow = request.getParameter("text-input");
+      shows.add(textShow);
+      Entity taskEntity = new Entity("Shows");
+      taskEntity.setProperty("show", textShow);
+      taskEntity.setProperty("timestamp", System.currentTimeMillis());
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      datastore.put(taskEntity);
      response.sendRedirect("/index.html");
   }
   
 
-  private String convertToJsonUsingGson() {
+  private String convertShowsToJsonUsingGson() {
     return (new Gson()).toJson(shows);
   }
 }
