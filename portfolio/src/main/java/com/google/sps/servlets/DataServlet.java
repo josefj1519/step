@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 /* Servlet that returns some example content.*/
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-  private ConcurrentSkipListSet<String> shows = new ConcurrentSkipListSet<String>();
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json;");
@@ -40,8 +39,7 @@ public class DataServlet extends HttpServlet {
       String textShows = request.getParameter("text-input");
       String[] arrShows = textShows.split("\\s*,\\s*");
       for(String tvShow : arrShows){
-          shows.add(tvShow);
-          Entity taskEntity = new Entity("Shows");
+          Entity taskEntity = new Entity("Show");
           taskEntity.setProperty("show", tvShow);
           taskEntity.setProperty("timestamp", timestamp);
           DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
