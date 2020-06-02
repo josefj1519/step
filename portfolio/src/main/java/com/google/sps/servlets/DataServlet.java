@@ -13,6 +13,8 @@
 // limitations under the License.
 
 package com.google.sps.servlets;
+import java.util.ArrayList;
+import java.util.List;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -37,9 +39,9 @@ public class DataServlet extends HttpServlet {
     List<String> shows = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
       shows.add((String)entity.getProperty("show"));
-      response.setContentType("application/json;");
-      response.getWriter().println(convertShowsToJsonUsingGson(shows));
     }
+    response.setContentType("application/json;");
+    response.getWriter().println((new Gson()).toJson(shows));
   }
 
  @Override
@@ -56,11 +58,7 @@ public class DataServlet extends HttpServlet {
       }
     
    
-     response.sendRedirect("/index.html");
-  }
-  
-  private String convertToJsonUsingGson(ArrayList<String> shows) {
-    return (new Gson()).toJson(shows);
+     response.sendRedirect("/index.html#quote-container");
   }
 
 }
