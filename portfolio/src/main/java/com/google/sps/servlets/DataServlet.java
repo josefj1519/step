@@ -33,12 +33,26 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String commentcount = request.getParameter("count");
+    int maxcomments;
+    try {
+        maxcomments = Integer.parseInt(commentcount);
+    } catch(NumberFormatException e){
+        // Display nothing for now.
+        maxcomments = 0;
+    }
     Query query = new Query("Show").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
     List<String> shows = new ArrayList<>();
+    int count = 0;
     for (Entity entity : results.asIterable()) {
-      shows.add((String)entity.getProperty("show"));
+      if(count < maxcomments){
+        shows.add((String)entity.getProperty("show"));
+      } else{
+          break;
+      }
+      count ++; 
     }
     response.setContentType("application/json;");
     response.getWriter().println((new Gson()).toJson(shows));

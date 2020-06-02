@@ -67,9 +67,9 @@
           <input type="submit"/>
         </form>
         </br>
-        <button onclick="getShowTitles()">Shows</button>
         <div id="shows-container"></div>
-      </div>
+         <input type="number" name="maxcomments" min=0 value=1 onchange="getShowTitles(this.value)">
+        </div>
     </div>
   </body>
 </html>
