@@ -47,7 +47,6 @@ public class DataServlet extends HttpServlet {
  @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
       String textShow = request.getParameter("text-input");
-      shows.add(textShow);
       Entity taskEntity = new Entity("Shows");
       taskEntity.setProperty("show", textShow);
       taskEntity.setProperty("timestamp", System.currentTimeMillis());
