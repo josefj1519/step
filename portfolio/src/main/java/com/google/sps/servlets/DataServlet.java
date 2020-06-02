@@ -13,6 +13,9 @@
 // limitations under the License.
 
 package com.google.sps.servlets;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
 import java.util.concurrent.ConcurrentSkipListSet; 
 import com.google.gson.Gson;
 import java.io.IOException;
@@ -33,11 +36,19 @@ public class DataServlet extends HttpServlet {
 
  @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+      long timestamp = System.currentTimeMillis();
       String textShows = request.getParameter("text-input");
       String[] arrShows = textShows.split("\\s*,\\s*");
       for(String tvShow : arrShows){
           shows.add(tvShow);
+          Entity taskEntity = new Entity("Shows");
+          taskEntity.setProperty("show", tvShow);
+          taskEntity.setProperty("timestamp", timestamp);
+          DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+          datastore.put(taskEntity);
       }
+    
+   
      response.sendRedirect("/index.html");
   }
   
