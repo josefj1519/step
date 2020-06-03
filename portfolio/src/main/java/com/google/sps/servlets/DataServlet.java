@@ -62,7 +62,7 @@ public class DataServlet extends HttpServlet {
       taskEntity.setProperty("timestamp", System.currentTimeMillis());
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       datastore.put(taskEntity);
-     response.sendRedirect("/index.html#quote-container");
+      response.sendRedirect("/index.html#quote-container");
   }
 
 }
