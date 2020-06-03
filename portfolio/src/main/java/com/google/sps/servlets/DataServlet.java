@@ -38,7 +38,7 @@ public class DataServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     List<String> shows = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-      shows.add((String)entity.getProperty("show"));
+      shows.add(entity.getProperty("show").toString());
     }
     response.setContentType("application/json;");
     response.getWriter().println((new Gson()).toJson(shows));
