@@ -68,7 +68,10 @@
         </form>
         </br>
         <div id="shows-container"></div>
-         <input type="number" name="maxcomments" min=0 value=1 onchange="getShowTitles(this.value)">
+         <input type="number" name="maxcomments" min=0 value=5 onchange="getShowTitles(this.value)">
+         </br>
+        <div id="delete-shows-container">
+         <button onclick="deleteShow()">Nuke</button>
         </div>
     </div>
   </body>

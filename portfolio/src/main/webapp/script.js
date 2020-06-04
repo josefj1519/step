@@ -42,3 +42,7 @@ async function getShowTitles(maxComments){
   const showsContainer = document.getElementById('shows-container');
   showsContainer.innerText = shows;
 }
+ async function deleteShow() {
+  await fetch('/delete-data', {method: 'POST'});
+  await getShowTitles(0);
+}
