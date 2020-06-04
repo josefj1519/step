@@ -36,8 +36,8 @@ function addRandomQuote() {
   quoteContainer.innerText = quote;
 }
 
-async function getShowTitles(){
-  const response = await fetch('/data');
+async function getShowTitles(maxComments){
+  const response = await fetch('/data?count='+maxComments);
   const shows = await response.json();
   const showsContainer = document.getElementById('shows-container');
   showsContainer.innerText = shows;
