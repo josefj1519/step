@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body id="body">
+  <body id="body" onload="fetchBlobstoreUrlAndShowForm()">
     <div id="hamburger" onclick="displayHamburgerDropdown()">
       <div class=bar></div>
       <div class=bar></div>
@@ -73,6 +73,12 @@
         <div id="delete-shows-container">
          <button onclick="deleteShow()">Nuke</button>
         </div>
+        <form id="image-form" class="hidden" method="POST" enctype="multipart/form-data">
+            <p>Upload your favorite image!</p>
+            <input type="file" name="image">
+            <input type="submit">
+        </form>
+        <div id="image-list"></div>
     </div>
   </body>
 </html>
