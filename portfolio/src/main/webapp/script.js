@@ -20,6 +20,12 @@ function displayHamburgerDropdown(){
     }
 }
 
+function onLoad(){
+    fetchBlobstoreUrlAndShowForm();
+    getShowTitles(5);
+    getUserImages();
+}
+
 function addRandomQuote() {
   const quotes =
       ['Her?', 'Everything changed when the fire nation attacked', 'I\'m the one who knocks!'];
@@ -48,4 +54,15 @@ async function fetchBlobstoreUrlAndShowForm(){
     const imageForm = document.getElementById('image-form');
     imageForm.action = await response.text();
     imageForm.classList.remove('hidden');
+}
+
+async function getUserImages(){
+    const response = await fetch('/image-handler');
+    const images = await response.json();
+    const imagesContainer = document.getElementById('image-container');
+    images.forEach(imageUrl=>{
+      var imageNode = document.createElement('IMG');
+      imageNode.setAttribute('src',imageUrl);
+      imagesContainer.appendChild(imageNode);
+    });
 }

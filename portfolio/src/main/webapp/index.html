@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body id="body" onload="fetchBlobstoreUrlAndShowForm()">
+  <body id="body" onload="onLoad()">
     <div id="hamburger" onclick="displayHamburgerDropdown()">
       <div class=bar></div>
       <div class=bar></div>
@@ -78,7 +78,8 @@
             <input type="file" name="image">
             <input type="submit">
         </form>
-        <div id="image-list"></div>
+        </br>
+        <div id="image-container"></div>
     </div>
   </body>
 </html>
