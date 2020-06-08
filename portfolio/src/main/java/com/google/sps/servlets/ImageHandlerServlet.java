@@ -41,7 +41,7 @@ import javax.servlet.http.HttpServletResponse;
  * to this servlet. This servlet can then process the request using the file URL we get from
  * Blobstore.
  */
-@WebServlet("/image-handler")
+@WebServlet("/images")
 public class ImageHandlerServlet extends HttpServlet {
 
   @Override
