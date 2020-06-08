@@ -44,7 +44,7 @@ async function getShowTitles(maxComments){
 }
 
 async function fetchBlobstoreUrlAndShowForm(){
-    const response = await fetch('/blobstore-upload');
+    const response = await fetch('/blobstore-upload-url');
     const imageForm = document.getElementById('image-form');
     imageForm.action = await response.text();
     imageForm.classList.remove('hidden');
