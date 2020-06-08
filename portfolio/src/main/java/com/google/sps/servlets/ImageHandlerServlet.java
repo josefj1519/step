@@ -66,7 +66,6 @@ public class ImageHandlerServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get the URL of the image that the user uploaded to Blobstore.
     String imageUrl = getUploadedFileUrl(request, "image");
-    System.out.println("url: "+ imageUrl);
     // Store url in Datastore
     if(imageUrl != null){
       Entity taskEntity = new Entity("Images");
