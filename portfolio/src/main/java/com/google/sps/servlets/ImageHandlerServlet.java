@@ -47,7 +47,7 @@ import javax.servlet.http.HttpServletResponse;
  * to this servlet. This servlet can then process the request using the file URL we get from
  * Blobstore.
  */
-@WebServlet("/image-handler")
+@WebServlet("/images")
 public class ImageHandlerServlet extends HttpServlet {
 
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException { 
@@ -70,7 +70,7 @@ public class ImageHandlerServlet extends HttpServlet {
     if(imageUrl != null){
       Entity taskEntity = new Entity("Images");
       taskEntity.setProperty("image", imageUrl);
-      taskEntity.setProperty("timestamp", System.currentTimeMillis());
+      taskEntity.setProperty("upload_timestamp", System.currentTimeMillis());
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       datastore.put(taskEntity);
     }
