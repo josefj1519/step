@@ -50,14 +50,14 @@ async function getShowTitles(maxComments){
 }
 
 async function fetchBlobstoreUrlAndShowForm(){
-    const response = await fetch('/blobstore-upload');
+    const response = await fetch('/blobstore-upload-url');
     const imageForm = document.getElementById('image-form');
     imageForm.action = await response.text();
     imageForm.classList.remove('hidden');
 }
 
 async function getUserImages(){
-    const response = await fetch('/image-handler');
+    const response = await fetch('/images');
     const images = await response.json();
     const imagesContainer = document.getElementById('image-container');
     images.forEach(imageUrl=>{

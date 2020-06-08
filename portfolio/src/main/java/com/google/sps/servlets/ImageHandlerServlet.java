@@ -52,7 +52,7 @@ public class ImageHandlerServlet extends HttpServlet {
 
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException { 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query query = new Query("Images").addSort("timestamp", SortDirection.DESCENDING);
+    Query query = new Query("Images").addSort("upload_timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
     List<String> images = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
