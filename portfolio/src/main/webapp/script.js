@@ -20,10 +20,6 @@ function displayHamburgerDropdown(){
     }
 }
 
-
-/**
- * Adds a random quote to the page.
- */
 function addRandomQuote() {
   const quotes =
       ['Her?', 'Everything changed when the fire nation attacked', 'I\'m the one who knocks!'];
@@ -45,4 +41,11 @@ async function getShowTitles(maxComments){
  async function deleteShow() {
   await fetch('/delete-data', {method: 'POST'});
   await getShowTitles(0);
+}
+
+async function fetchBlobstoreUrlAndShowForm(){
+    const response = await fetch('/blobstore-upload-url');
+    const imageForm = document.getElementById('image-form');
+    imageForm.action = await response.text();
+    imageForm.hidden = false;
 }
