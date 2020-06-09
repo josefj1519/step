@@ -14,6 +14,8 @@
 
 package com.google.sps.servlets;
 
+import java.util.ArrayList;
+import java.util.List;
 import com.google.appengine.api.blobstore.BlobInfo;
 import com.google.appengine.api.blobstore.BlobInfoFactory;
 import com.google.appengine.api.blobstore.BlobKey;
@@ -24,7 +26,11 @@ import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.images.ServingUrlOptions;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
@@ -44,11 +50,22 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/images")
 public class ImageHandlerServlet extends HttpServlet {
 
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException { 
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query query = new Query("Images").addSort("upload_timestamp", SortDirection.DESCENDING);
+    PreparedQuery results = datastore.prepare(query);
+    List<String> images = new ArrayList<>();
+    for (Entity entity : results.asIterable()) {
+        images.add(entity.getProperty("image").toString());
+    }
+    response.setContentType("application/json;");
+    response.getWriter().println((new Gson()).toJson(images));
+  }
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get the URL of the image that the user uploaded to Blobstore.
     String imageUrl = getUploadedFileUrl(request, "image");
-
     // Store url in Datastore
     if(imageUrl != null){
       Entity taskEntity = new Entity("Images");
@@ -57,7 +74,7 @@ public class ImageHandlerServlet extends HttpServlet {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       datastore.put(taskEntity);
     }
-    response.sendRedirect("/index.html#image-list");
+    response.sendRedirect("/index.html#image-container");
   }
 
   /** Returns a URL that points to the uploaded file, or null if the user didn't upload a file. */
