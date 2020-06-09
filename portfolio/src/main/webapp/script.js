@@ -53,7 +53,7 @@ async function fetchBlobstoreUrlAndShowForm(){
     const response = await fetch('/blobstore-upload-url');
     const imageForm = document.getElementById('image-form');
     imageForm.action = await response.text();
-    imageForm.classList.remove('hidden');
+    imageForm.hidden = false;
 }
 
 async function getUserImages(){
