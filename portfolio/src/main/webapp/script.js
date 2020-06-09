@@ -69,7 +69,15 @@ async function getUserImages(){
 }
 
 function createMap() {
+  var dtla = {lat: 34.0506274, lng: -118.2562283};
   const map = new google.maps.Map(
       document.getElementById('map'),
-      {center: {lat: 37.422, lng: -122.084}, zoom: 16});
+      {center: dtla, zoom: 17,  mapTypeId: "satellite"});
+  map.setTilt(45);
+  var marker = new google.maps.Marker({
+    position: dtla, 
+    map: map, 
+    title:'DTLA', 
+    animation: google.maps.Animation.DROP
+  });
 }
