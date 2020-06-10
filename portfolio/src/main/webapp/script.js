@@ -71,5 +71,6 @@ async function getUserImages(){
 function createMap() {
   const map = new google.maps.Map(
       document.getElementById('map'),
+      // Lattitude and Longitude of the GooglePlex
       {center: {lat: 37.422, lng: -122.084}, zoom: 16});
 }
