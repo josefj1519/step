@@ -69,6 +69,7 @@ async function getUserImages(){
 }
 
 function createMap() {
+ // Lattitude and longitude of Chavez Ravine.
   var chavezRavine = {lat: 34.073851, lng: -118.242147};
   const map = new google.maps.Map(
       document.getElementById('map'),
@@ -83,8 +84,7 @@ function createMap() {
    var contentString = '<div id="windowContent">'+
       '<h1>Chavez Ravine</h1>'+
       '<p>This is Chavez Ravine, home of the LA Dodgers!</p>'+
-      '</div>';
-
+      '</div>'
   var infowindow = new google.maps.InfoWindow({
     content: contentString,
   });
