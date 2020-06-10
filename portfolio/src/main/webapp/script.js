@@ -69,6 +69,7 @@ async function getUserImages(){
 }
 
 function createMap() {
+  // Lattitude and Longitude of Downtown LA
   var dtla = {lat: 34.0506274, lng: -118.2562283};
   const map = new google.maps.Map(
       document.getElementById('map'),
