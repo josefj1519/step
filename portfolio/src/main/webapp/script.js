@@ -68,27 +68,50 @@ async function getUserImages(){
     });
 }
 
+let map;
+
+let editMarker;
+
 function createMap() {
- // Lattitude and longitude of Chavez Ravine.
-  var chavezRavine = {lat: 34.073851, lng: -118.242147};
-  const map = new google.maps.Map(
+  // Lattitude and longitude of the USA.
+  const usa = {lat: 38.5949, lng: -94.8923};
+  map = new google.maps.Map(
       document.getElementById('map'),
-      {center: chavezRavine, zoom: 17,  mapTypeId: "satellite"});
-  map.setTilt(45);
-  var marker = new google.maps.Marker({
-    position: chavezRavine,
-    map: map, 
-    title:'Chavez Ravine', 
-    animation: google.maps.Animation.DROP
+      {center: usa , zoom: 4});
+
+  map.addListener('click', (event) => {
+    createMarkerForEdit(event.latLng.lat(), event.latLng.lng());
   });
-   var contentString = '<div id="windowContent">'+
-      '<h1>Chavez Ravine</h1>'+
-      '<p>This is Chavez Ravine, home of the LA Dodgers!</p>'+
-      '</div>'
-  var infowindow = new google.maps.InfoWindow({
-    content: contentString,
+
+  fetchMarkers();
+}
+
+async function fetchMarkers() {
+  const response = await fetch('/markers');
+  const markers = await response.json();
+    markers.forEach(marker => {
+      createMarkerForDisplay(marker.lat, marker.lng)
   });
-  marker.addListener('click', function() {
-    infowindow.open(map, marker);
-  });
+}
+
+function createMarkerForDisplay(lat, lng) {
+  const marker =
+      new google.maps.Marker({position: {lat: lat, lng: lng}, map: map});
+}
+
+function postMarker(lat, lng) {
+  const params = new URLSearchParams();
+  params.append('lat', lat);
+  params.append('lng', lng);
+
+  fetch('/markers', {method: 'POST', body: params});
+}
+
+function createMarkerForEdit(lat, lng) {
+  // If we're already showing an editable marker, then remove it.
+  if (editMarker) {
+    editMarker.setMap(null);
+  }
+  editMarker =
+      new google.maps.Marker({position: {lat: lat, lng: lng}, map: map});
 }
