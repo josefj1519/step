@@ -112,6 +112,8 @@ function createMarkerForEdit(lat, lng) {
   if (editMarker) {
     editMarker.setMap(null);
   }
+  postMarker(lat, lng);
   editMarker =
       new google.maps.Marker({position: {lat: lat, lng: lng}, map: map});
+
 }
