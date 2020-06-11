@@ -41,11 +41,7 @@ public class MarkerServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) {
-    double lat = Double.parseDouble(request.getParameter("lat"));
-    double lng = Double.parseDouble(request.getParameter("lng"));
-
-    Marker marker = new Marker(lat, lng);
-    storeMarker(marker);
+    storeMarker(new Marker(Double.parseDouble(request.getParameter("lat")), Double.parseDouble(request.getParameter("lng"))));
   }
 
   /** Fetches markers from Datastore. */
@@ -55,10 +51,7 @@ public class MarkerServlet extends HttpServlet {
     Query query = new Query("Marker");
     PreparedQuery results = datastore.prepare(query);
     for (Entity entity : results.asIterable()) {
-      double lat = (double) entity.getProperty("lat");
-      double lng = (double) entity.getProperty("lng");
-      Marker marker = new Marker(lat, lng);
-      markers.add(marker);
+      markers.add(new Marker((double) entity.getProperty("lat"), (double) entity.getProperty("lng")));
     }
     return markers;
   }
