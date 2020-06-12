@@ -73,7 +73,7 @@ let map;
 let editMarker;
 
 function createMap() {
-  // Lattitude and longitude of the USA.
+  // Latitude and longitude of the USA.
   const usa = {lat: 38.5949, lng: -94.8923};
   map = new google.maps.Map(
       document.getElementById('map'),
