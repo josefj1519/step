@@ -16,7 +16,8 @@ package com.google.sps;
 
 import java.util.Comparator;
 import java.util.Collection;
-import java.util.Collections;
+import static java.util.Collections.disjoint;
+import static java.util.Collections.sort;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
@@ -25,13 +26,13 @@ public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
       Collection<TimeRange> queryResult = new ArrayList<>();
       List<Event> eventsList = new ArrayList<>(events);
-      Collections.sort(eventsList, new Comparator<Event>() {
+      sort(eventsList, new Comparator<Event>() {
         public int compare (Event e1, Event e2) {
             return TimeRange.ORDER_BY_START.compare(e1.getWhen(), e2.getWhen());
           }
         });
       eventsList.removeIf(e -> (
-        Collections.disjoint(e.getAttendees(), request.getAttendees()) || e.getWhen().duration() <= 0));
+        e.getWhen().duration() <= 0 || disjoint(e.getAttendees(), request.getAttendees())));
       if( request.getAttendees().isEmpty()){
           return Arrays.asList(TimeRange.WHOLE_DAY);
       }
