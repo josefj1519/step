@@ -14,17 +14,25 @@
 
 package com.google.sps;
 
-import java.util.Comparator;
-import java.util.Collection;
+import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.disjoint;
 import static java.util.Collections.sort;
+import static java.util.Arrays.asList;
+
+import java.util.Comparator;
+import java.util.Collection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Arrays;
 
+
+// FindMeetingQuery finds open meeting timeslots throughout the day.
 public final class FindMeetingQuery {
+  /** 
+  *  @param events Set of events that attendees have, that need to be avoided.
+  *  @param request The duration of requested meeting and people attending. 
+  *  @return A list of open meeting timeslots.  
+  */
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-      Collection<TimeRange> queryResult = new ArrayList<>();
       List<Event> eventsList = new ArrayList<>(events);
       sort(eventsList, new Comparator<Event>() {
         public int compare (Event e1, Event e2) {
@@ -32,21 +40,26 @@ public final class FindMeetingQuery {
           }
         });
       eventsList.removeIf(e -> (
-        e.getWhen().duration() <= 0 || disjoint(e.getAttendees(), request.getAttendees())));
+          e.getWhen().duration() <= 0 || disjoint(e.getAttendees(), request.getAttendees())));
       if( request.getAttendees().isEmpty()){
-          return Arrays.asList(TimeRange.WHOLE_DAY);
+          return asList(TimeRange.WHOLE_DAY);
       }
       if(request.getDuration() > TimeRange.WHOLE_DAY.duration()){
-          return queryResult;
+          return EMPTY_LIST;
       }
       if(eventsList.size()==0){
-          return Arrays.asList(TimeRange.WHOLE_DAY);
+          return asList(TimeRange.WHOLE_DAY);
       }
       if(eventsList.size()==1){
-          return Arrays.asList(TimeRange.fromStartEnd(TimeRange.START_OF_DAY, eventsList.get(0).getWhen().start(), false ),
+          return asList(TimeRange.fromStartEnd(TimeRange.START_OF_DAY, eventsList.get(0).getWhen().start(), false),
           TimeRange.fromStartEnd(eventsList.get(0).getWhen().end(), TimeRange.END_OF_DAY, true)); 
        }
 
+      return getOpenTimeSlots(eventsList, request);
+  }
+
+  private Collection<TimeRange> getOpenTimeSlots(List<Event> eventsList, MeetingRequest request){
+      Collection<TimeRange> queryResult = new ArrayList<>();
       for(int i=0;i<eventsList.size();i++){
         if(i==0){
             if(eventsList.get(i).getWhen().start()-request.getDuration()>=TimeRange.START_OF_DAY){
