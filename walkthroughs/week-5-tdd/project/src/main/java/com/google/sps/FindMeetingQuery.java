@@ -71,7 +71,8 @@ public final class FindMeetingQuery {
       for(int i=0;i<eventsList.size();i++){
         /** 
         *  First event in the list, check if there is enough time between event start and the start of the day. 
-        *  If there is add to the result.
+        *  If there is enough time, add to the result. Since the events are sorted by start time we can check the
+        *  first index.
         */
         if(i==0){
             if(eventsList.get(i).getWhen().start()-request.getDuration()>=TimeRange.START_OF_DAY){
