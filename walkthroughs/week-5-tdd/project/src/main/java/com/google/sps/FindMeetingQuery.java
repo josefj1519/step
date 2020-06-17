@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.ArrayList;
 import java.util.List;
 
-
 // FindMeetingQuery finds open meeting timeslots throughout the day.
 public final class FindMeetingQuery {
 
@@ -80,7 +79,6 @@ public final class FindMeetingQuery {
     }
     return timeranges;
   }
-
 
   /**
   *  This method gets the open time slots by looping through a list of events
