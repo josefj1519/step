@@ -98,7 +98,6 @@ public final class FindMeetingQuery {
           return asList(TimeRange.fromStartEnd(TimeRange.START_OF_DAY, eventsList.get(0).getWhen().start(), false),
           TimeRange.fromStartEnd(eventsList.get(0).getWhen().end(), TimeRange.END_OF_DAY, true)); 
        }
-      
       for(int i=0;i<eventsList.size();i++){
         /** 
         *  First event in the list, check if there is enough time between event start and the start of the day. 
