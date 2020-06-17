@@ -310,7 +310,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test
-  public void optionalAttendeesOnlyWithTimeAvaliable(){
+  public void optionalAttendeesOnlyWithTimeAvailable(){
     // Have each person have different events. We should see two options because each person has
     // split the restricted times.
     //
@@ -386,7 +386,7 @@ public final class FindMeetingQueryTest {
     Assert.assertEquals(expected, actual);
   }
   @Test
-  public void notEnoughRoomForOptionalAtendees() {
+  public void notEnoughRoomForOptionalAttendees() {
     //
     // Events  : |--A-----| |-----B----|
     // Day     : |---------------------|
