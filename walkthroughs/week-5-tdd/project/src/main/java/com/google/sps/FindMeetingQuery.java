@@ -61,6 +61,7 @@ public final class FindMeetingQuery {
             return TimeRange.ORDER_BY_START.compare(e1.getWhen(), e2.getWhen());
           }
         });
+    /** We want to remove any attendees not attending or events less-than/equal to 0. */
     eventsList.removeIf(e -> (
         e.getWhen().duration() <= 0 || disjoint(e.getAttendees(), attendees)));
   }
@@ -80,6 +81,14 @@ public final class FindMeetingQuery {
     return timeranges;
   }
 
+
+  /**
+  *  This method gets the open time slots by looping through a list of events
+  *  given that the list is sorted by start time. 
+  *  @param eventsList list of events in sorted order (by start time).
+  *  @param request he duration of requested meeting and people attending.
+  *  @return A list of open meeting timeslots. 
+  */
   private Collection<TimeRange> getOpenTimeSlots(Collection<Event> events, MeetingRequest request, Collection<String> attendees){
       List<Event> eventsList = new ArrayList<>(events);
       Collection<TimeRange> openTimeSlots = new ArrayList<>();
@@ -91,8 +100,13 @@ public final class FindMeetingQuery {
           return asList(TimeRange.fromStartEnd(TimeRange.START_OF_DAY, eventsList.get(0).getWhen().start(), false),
           TimeRange.fromStartEnd(eventsList.get(0).getWhen().end(), TimeRange.END_OF_DAY, true)); 
        }
-
+      
       for(int i=0;i<eventsList.size();i++){
+        /** 
+        *  First event in the list, check if there is enough time between event start and the start of the day. 
+        *  If there is enough time, add to the result. Since the events are sorted by start time we can check the
+        *  first index.
+        */
         if(i==0){
             if(eventsList.get(i).getWhen().start()-request.getDuration()>=TimeRange.START_OF_DAY){
               openTimeSlots.add(TimeRange.fromStartEnd(TimeRange.START_OF_DAY,eventsList.get(i).getWhen().start(), false));
@@ -100,13 +114,19 @@ public final class FindMeetingQuery {
         }
         if(i != eventsList.size()-1){
           if(eventsList.get(i).getWhen().overlaps(eventsList.get(i+1).getWhen())){
-            // Check for overlap.  Don't need to check for the reverse, since it is pre-sorted.
+            /** Check for overlap.  Don't need to check for the reverse, since it is pre-sorted. */
             if(eventsList.get(i).getWhen().contains(eventsList.get(i+1).getWhen())){
+                /** 
+                *  If one event contains another event. Set i+1 to i.  
+                *  This is to get the earliest start and latest end time for an event.
+                */
                  eventsList.set(i+1, eventsList.get(i));
-            }     
+            }   
+            /**  Check if there is enough time between two events. */  
         } else if(eventsList.get(i+1).getWhen().start()-eventsList.get(i).getWhen().end()>=request.getDuration()){
             openTimeSlots.add(TimeRange.fromStartEnd(eventsList.get(i).getWhen().end(),eventsList.get(i+1).getWhen().start(), false));
         } 
+        /** For last element in event list check if there is enough time between event end and end of day */
        } else if (eventsList.get(i).getWhen().end()+request.getDuration()<= TimeRange.END_OF_DAY){
            openTimeSlots.add(TimeRange.fromStartEnd(eventsList.get(i).getWhen().end(), TimeRange.END_OF_DAY, true));
        }
