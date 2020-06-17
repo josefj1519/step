@@ -27,43 +27,75 @@ import java.util.List;
 
 // FindMeetingQuery finds open meeting timeslots throughout the day.
 public final class FindMeetingQuery {
+
   /** 
   *  @param events Set of events that attendees have, that need to be avoided.
   *  @param request The duration of requested meeting and people attending. 
   *  @return A list of open meeting timeslots.  
   */
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-      List<Event> eventsList = new ArrayList<>(events);
-      sort(eventsList, new Comparator<Event>() {
+      if(request.getDuration() > TimeRange.WHOLE_DAY.duration()){
+          return EMPTY_LIST;
+      }
+      if(events.isEmpty()){
+          return asList(TimeRange.WHOLE_DAY);
+      }
+      Collection<TimeRange> requiredAttendeeTimeRangeResult = new ArrayList<>();
+      Collection<TimeRange> optionalAttendeeTimeRangeResult = new ArrayList<>();
+     if(!request.getAttendees().isEmpty()){
+          requiredAttendeeTimeRangeResult = getOpenTimeSlots(events, request, request.getAttendees());
+      } else if(!request.getOptionalAttendees().isEmpty()){
+           return getOpenTimeSlots(events, request, request.getOptionalAttendees());
+      } else{
+          return asList(TimeRange.WHOLE_DAY);
+      }
+      optionalAttendeeTimeRangeResult = checkOptionalAttendees(events, requiredAttendeeTimeRangeResult, request);
+
+      return optionalAttendeeTimeRangeResult.isEmpty() ? requiredAttendeeTimeRangeResult :
+        optionalAttendeeTimeRangeResult;
+  }
+
+  private void sortAndRemoveEvents(List<Event> eventsList, Collection<String> attendees){
+    sort(eventsList, new Comparator<Event>() {
         public int compare (Event e1, Event e2) {
             return TimeRange.ORDER_BY_START.compare(e1.getWhen(), e2.getWhen());
           }
         });
-      eventsList.removeIf(e -> (
-          e.getWhen().duration() <= 0 || disjoint(e.getAttendees(), request.getAttendees())));
-      if( request.getAttendees().isEmpty()){
+    eventsList.removeIf(e -> (
+        e.getWhen().duration() <= 0 || disjoint(e.getAttendees(), attendees)));
+  }
+
+  private Collection<TimeRange> checkOptionalAttendees(Collection<Event> events, 
+    Collection<TimeRange> requiredAttendeeTimeRangeResult, MeetingRequest request){
+    List<Event> eventsList = new ArrayList<>(events);
+    Collection<TimeRange> timeranges = new ArrayList<>(requiredAttendeeTimeRangeResult);
+    sortAndRemoveEvents(eventsList, request.getOptionalAttendees());
+    for(Event event : eventsList){
+        for(TimeRange timerange : requiredAttendeeTimeRangeResult){
+            if(timerange.overlaps(event.getWhen())){
+                timeranges.remove(timerange);
+            }
+        }
+    }
+    return timeranges;
+  }
+
+  private Collection<TimeRange> getOpenTimeSlots(Collection<Event> events, MeetingRequest request, Collection<String> attendees){
+      List<Event> eventsList = new ArrayList<>(events);
+      Collection<TimeRange> openTimeSlots = new ArrayList<>();
+      sortAndRemoveEvents(eventsList, attendees);
+      if(eventsList.isEmpty()){
           return asList(TimeRange.WHOLE_DAY);
-      }
-      if(request.getDuration() > TimeRange.WHOLE_DAY.duration()){
-          return EMPTY_LIST;
-      }
-      if(eventsList.size()==0){
-          return asList(TimeRange.WHOLE_DAY);
-      }
-      if(eventsList.size()==1){
+       }
+        if(eventsList.size()==1){
           return asList(TimeRange.fromStartEnd(TimeRange.START_OF_DAY, eventsList.get(0).getWhen().start(), false),
           TimeRange.fromStartEnd(eventsList.get(0).getWhen().end(), TimeRange.END_OF_DAY, true)); 
        }
 
-      return getOpenTimeSlots(eventsList, request);
-  }
-
-  private Collection<TimeRange> getOpenTimeSlots(List<Event> eventsList, MeetingRequest request){
-      Collection<TimeRange> queryResult = new ArrayList<>();
       for(int i=0;i<eventsList.size();i++){
         if(i==0){
             if(eventsList.get(i).getWhen().start()-request.getDuration()>=TimeRange.START_OF_DAY){
-              queryResult.add(TimeRange.fromStartEnd(TimeRange.START_OF_DAY,eventsList.get(i).getWhen().start(), false));
+              openTimeSlots.add(TimeRange.fromStartEnd(TimeRange.START_OF_DAY,eventsList.get(i).getWhen().start(), false));
             }
         }
         if(i != eventsList.size()-1){
@@ -73,12 +105,12 @@ public final class FindMeetingQuery {
                  eventsList.set(i+1, eventsList.get(i));
             }     
         } else if(eventsList.get(i+1).getWhen().start()-eventsList.get(i).getWhen().end()>=request.getDuration()){
-            queryResult.add(TimeRange.fromStartEnd(eventsList.get(i).getWhen().end(),eventsList.get(i+1).getWhen().start(), false));
+            openTimeSlots.add(TimeRange.fromStartEnd(eventsList.get(i).getWhen().end(),eventsList.get(i+1).getWhen().start(), false));
         } 
        } else if (eventsList.get(i).getWhen().end()+request.getDuration()<= TimeRange.END_OF_DAY){
-           queryResult.add(TimeRange.fromStartEnd(eventsList.get(i).getWhen().end(), TimeRange.END_OF_DAY, true));
+           openTimeSlots.add(TimeRange.fromStartEnd(eventsList.get(i).getWhen().end(), TimeRange.END_OF_DAY, true));
        }
       }
-      return queryResult;
+      return openTimeSlots;
   }
 }
