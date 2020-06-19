@@ -26,41 +26,62 @@ import java.util.Collection;
 import java.util.ArrayList;
 import java.util.List;
 
-
 // FindMeetingQuery finds open meeting timeslots throughout the day.
 public final class FindMeetingQuery {
+
   /** 
   *  @param events Set of events that attendees have, that need to be avoided.
   *  @param request The duration of requested meeting and people attending. 
   *  @return A list of open meeting timeslots.  
   */
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-      List<Event> eventsList = new ArrayList<>(events);
-      sort(eventsList, new Comparator<Event>() {
+      if(request.getDuration() > TimeRange.WHOLE_DAY.duration()){
+          return EMPTY_LIST;
+      }
+      if(events.isEmpty()){
+          return asList(TimeRange.WHOLE_DAY);
+      }
+      Collection<TimeRange> requiredAttendeeTimeRangeResult = new ArrayList<>();
+      Collection<TimeRange> optionalAttendeeTimeRangeResult = new ArrayList<>();
+     if(!request.getAttendees().isEmpty()){
+          requiredAttendeeTimeRangeResult = getOpenTimeSlots(events, request, request.getAttendees());
+      } else if(!request.getOptionalAttendees().isEmpty()){
+           return getOpenTimeSlots(events, request, request.getOptionalAttendees());
+      } else{
+          return asList(TimeRange.WHOLE_DAY);
+      }
+      optionalAttendeeTimeRangeResult = checkOptionalAttendees(events, requiredAttendeeTimeRangeResult, request);
+
+      return optionalAttendeeTimeRangeResult.isEmpty() ? requiredAttendeeTimeRangeResult :
+        optionalAttendeeTimeRangeResult;
+  }
+
+  private void sortAndRemoveEvents(List<Event> eventsList, Collection<String> attendees){
+    sort(eventsList, new Comparator<Event>() {
         public int compare (Event e1, Event e2) {
             return TimeRange.ORDER_BY_START.compare(e1.getWhen(), e2.getWhen());
           }
         });
-      // We want to remove any attendees not attending or events less-than/equal to 0. 
-      eventsList.removeIf(e -> (
-          e.getWhen().duration() <= 0 || disjoint(e.getAttendees(), request.getAttendees())));
-    
-      if( request.getAttendees().isEmpty()){
-          return asList(TimeRange.WHOLE_DAY);
-      }
-      if(request.getDuration() > TimeRange.WHOLE_DAY.duration()){
-          return EMPTY_LIST;
-      }
-      if(eventsList.size()==0){
-          return asList(TimeRange.WHOLE_DAY);
-      }
-      if(eventsList.size()==1){
-          return asList(TimeRange.fromStartEnd(TimeRange.START_OF_DAY, eventsList.get(0).getWhen().start(), false),
-          TimeRange.fromStartEnd(eventsList.get(0).getWhen().end(), TimeRange.END_OF_DAY, true)); 
-       }
-
-      return getOpenTimeSlots(eventsList, request);
+    /** We want to remove any attendees not attending or events less-than/equal to 0. */
+    eventsList.removeIf(e -> (
+        e.getWhen().duration() <= 0 || disjoint(e.getAttendees(), attendees)));
   }
+
+  private Collection<TimeRange> checkOptionalAttendees(Collection<Event> events, 
+    Collection<TimeRange> requiredAttendeeTimeRangeResult, MeetingRequest request){
+    List<Event> eventsList = new ArrayList<>(events);
+    Collection<TimeRange> timeranges = new ArrayList<>(requiredAttendeeTimeRangeResult);
+    sortAndRemoveEvents(eventsList, request.getOptionalAttendees());
+    for(Event event : eventsList){
+        for(TimeRange timerange : requiredAttendeeTimeRangeResult){
+            if(timerange.overlaps(event.getWhen())){
+                timeranges.remove(timerange);
+            }
+        }
+    }
+    return timeranges;
+  }
+
   /**
   *  This method gets the open time slots by looping through a list of events
   *  given that the list is sorted by start time. 
@@ -68,15 +89,19 @@ public final class FindMeetingQuery {
   *  @param request he duration of requested meeting and people attending.
   *  @return A list of open meeting timeslots. 
   */
-  private Collection<TimeRange> getOpenTimeSlots(List<Event> eventsList, MeetingRequest request){
-      Collection<TimeRange> queryResult = new ArrayList<>();
-
+  private Collection<TimeRange> getOpenTimeSlots(Collection<Event> events, MeetingRequest request, Collection<String> attendees){
+      List<Event> eventsList = new ArrayList<>(events);
+      Collection<TimeRange> openTimeSlots = new ArrayList<>();
+      sortAndRemoveEvents(eventsList, attendees);
+      if(eventsList.isEmpty()){
+          return asList(TimeRange.WHOLE_DAY);
+       }
       Optional<TimeRange> optionalTimeRange;
       // First event in the list, check if there is enough time between event start and the start of the day. 
       //  If there is enough time, add to the result. Since the events are sorted by start time we can check the
       //  first index.
       optionalTimeRange = getTimeSlotWhenPossible(TimeRange.START_OF_DAY, eventsList.get(0).getWhen().start(), request.getDuration(), false);
-      optionalTimeRange.ifPresent(range -> queryResult.add(range));
+      optionalTimeRange.ifPresent(range -> openTimeSlots.add(range));
       
       for(int i=0;i<eventsList.size();i++){
         TimeRange eventTime = eventsList.get(i).getWhen();
@@ -94,16 +119,16 @@ public final class FindMeetingQuery {
           } else {
              optionalTimeRange = getTimeSlotWhenPossible(eventEnd, nextEvent.start(), 
                request.getDuration(), false);
-             optionalTimeRange.ifPresent(range -> queryResult.add(range));
+             optionalTimeRange.ifPresent(range -> openTimeSlots.add(range));
            } 
          // For last element in event list check if there is enough time between event end and end of day 
        } else {
           optionalTimeRange = getTimeSlotWhenPossible(eventEnd,TimeRange.END_OF_DAY, 
             request.getDuration(), true);
-          optionalTimeRange.ifPresent(range -> queryResult.add(range));
+          optionalTimeRange.ifPresent(range -> openTimeSlots.add(range));
        }
       }
-      return queryResult;
+      return openTimeSlots;
   }
 
   private Optional<TimeRange> getTimeSlotWhenPossible(int start, int end, long duration, boolean inclusive){
