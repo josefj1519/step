@@ -72,14 +72,13 @@ public final class FindMeetingQuery {
       Collection<TimeRange> queryResult = new ArrayList<>();
 
       Optional<TimeRange> optionalTimeRange;
-
-      optionalTimeRange = hasSufficientTime(TimeRange.START_OF_DAY, eventsList.get(0).getWhen().start(), request.getDuration(), false);
+      // First event in the list, check if there is enough time between event start and the start of the day. 
+      //  If there is enough time, add to the result. Since the events are sorted by start time we can check the
+      //  first index.
+      optionalTimeRange = getTimeSlotWhenPossible(TimeRange.START_OF_DAY, eventsList.get(0).getWhen().start(), request.getDuration(), false);
       optionalTimeRange.ifPresent(range -> queryResult.add(range));
       
       for(int i=0;i<eventsList.size();i++){
-        // First event in the list, check if there is enough time between event start and the start of the day. 
-        //  If there is enough time, add to the result. Since the events are sorted by start time we can check the
-        //  first index.
         TimeRange eventTime = eventsList.get(i).getWhen();
         int eventEnd = eventTime.end();
 
@@ -91,15 +90,15 @@ public final class FindMeetingQuery {
             //  If one event contains another event. Set i+1 to i.  
             // This is to get the earliest start and latest end time for an event.
             eventsList.set(i+1, eventsList.get(i));
-          //  Check if there is enough time between two events. 
+            //  Check if there is enough time between two events. 
           } else {
-             optionalTimeRange = hasSufficientTime(eventEnd, nextEvent.start(), 
+             optionalTimeRange = getTimeSlotWhenPossible(eventEnd, nextEvent.start(), 
                request.getDuration(), false);
              optionalTimeRange.ifPresent(range -> queryResult.add(range));
            } 
-        // For last element in event list check if there is enough time between event end and end of day 
+         // For last element in event list check if there is enough time between event end and end of day 
        } else {
-          optionalTimeRange = hasSufficientTime(eventEnd,TimeRange.END_OF_DAY, 
+          optionalTimeRange = getTimeSlotWhenPossible(eventEnd,TimeRange.END_OF_DAY, 
             request.getDuration(), true);
           optionalTimeRange.ifPresent(range -> queryResult.add(range));
        }
@@ -107,7 +106,7 @@ public final class FindMeetingQuery {
       return queryResult;
   }
 
-  private Optional<TimeRange> hasSufficientTime(int start, int end, long duration, boolean inclusive){
+  private Optional<TimeRange> getTimeSlotWhenPossible(int start, int end, long duration, boolean inclusive){
       if(end-start >= duration){
           return Optional.of(TimeRange.fromStartEnd(start, end, inclusive));
       }
