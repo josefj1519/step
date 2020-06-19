@@ -89,21 +89,21 @@ public final class FindMeetingQuery {
           if(eventTime.overlaps(nextEvent)){
             // Check for overlap.  Don't need to check for the reverse, since it is pre-sorted. 
             if(eventTime.contains(nextEvent)){
-                //  If one event contains another event. Set i+1 to i.  
-                // This is to get the earliest start and latest end time for an event.
-                 eventsList.set(i+1, eventsList.get(i));
+              //  If one event contains another event. Set i+1 to i.  
+              // This is to get the earliest start and latest end time for an event.
+              eventsList.set(i+1, eventsList.get(i));
             }   
         //  Check if there is enough time between two events. 
         } else {
-            optionalTimeRange = hasSufficientTime(eventEnd, nextEvent.start(), 
-              request.getDuration(), false);
-            optionalTimeRange.ifPresent(range -> queryResult.add(range));
-        } 
+           optionalTimeRange = hasSufficientTime(eventEnd, nextEvent.start(), 
+             request.getDuration(), false);
+           optionalTimeRange.ifPresent(range -> queryResult.add(range));
+         } 
         // For last element in event list check if there is enough time between event end and end of day 
        } else {
-           optionalTimeRange = hasSufficientTime(eventEnd,TimeRange.END_OF_DAY, 
-             request.getDuration(), true);
-           optionalTimeRange.ifPresent(range -> queryResult.add(range));
+          optionalTimeRange = hasSufficientTime(eventEnd,TimeRange.END_OF_DAY, 
+            request.getDuration(), true);
+          optionalTimeRange.ifPresent(range -> queryResult.add(range));
        }
       }
       return queryResult;
